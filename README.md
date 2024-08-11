@@ -1,100 +1,102 @@
-To-Do List Application
-This is a simple and efficient To-Do List application built with Flutter, using the BLoC pattern for state management. The app allows users to add, update, delete, and filter to-do items. It also supports search functionality and persistent storage using SQLite.
+# **To-Do List Application(Android/iOS)**
 
-Features
-Add, update, and delete to-do items.
-Filter tasks by status: All, Pending, or Completed.
-Search through your to-do list.
-Mark tasks as complete or incomplete.
-Persistent storage with SQLite.
-Screenshots
-Add screenshots of your application here
+This is a simple and efficient To-Do List application built with Flutter, utilizing the BLoC pattern for state management. The app allows users to add, update, delete, and filter to-do items. It also includes search functionality and persistent storage using SQLite.
 
-Getting Started
-Prerequisites
-To run this project, ensure you have Flutter installed on your local machine. You can install Flutter by following the official installation guide.
+## **Features**
 
-Running the Application as a User
-Clone the Repository
+- **Add, update, and delete to-do items**
+- **Filter tasks by status**: All, Pending, or Completed
+- **Search through your to-do list**
+- **Mark tasks as complete or incomplete**
+- **Persistent storage** with SQLite
 
-bash
-Copy code
-git clone https://github.com/your-username/todo_app.git
-cd todo_app
-Run the Application
+## **Screenshots**
+<div style="display: flex;">
+<img src="https://github.com/user-attachments/assets/072bc44f-e74a-433f-a327-c5151f7c6641" width="240" height="500">
+<img src="https://github.com/user-attachments/assets/8c87d5ff-e4ed-453c-a5ca-5375466de8ad" width="240" height="500">
+<img src="https://github.com/user-attachments/assets/fd3ffcd3-34b6-4f48-b92d-4c79da55bfd6" width="240" height="500">
+<img src="https://github.com/user-attachments/assets/024ea613-5876-4013-9597-843f7bfdbdc8" width="240" height="500">
+</div>
 
-You can run the application using your preferred method:
 
-Using Flutter CLI:
 
-bash
-Copy code
-flutter run
-Using an IDE (Visual Studio Code or Android Studio):
+## **Getting Started**
 
-Open the project in your IDE.
-Click on the 'Run' button.
-Interact with the Application
+### **Prerequisites**
 
-Once the application is running, you can interact with the following features:
+Before you begin, ensure you have Flutter installed on your machine. You can follow the [official installation guide](https://flutter.dev/docs/get-started/install) to set it up.
 
-Add To-Do: Press the '+' button to add a new to-do item.
-Mark as Done: Tap the checkbox next to a to-do item to mark it as completed.
-Delete To-Do: Swipe right on a to-do item to delete it.
-Filter To-Dos: Use the toggle buttons to filter between All, Pending, and Completed tasks.
-Search To-Dos: Use the search bar to filter tasks by name.
-Running the Application as a Developer
-Setup
-Install Flutter
+This is project is build upon flutter 3.7.3 and related dependencies.
 
-If you haven't installed Flutter yet, follow the instructions in the official Flutter documentation.
+### **Running the Application**
 
-Install Dependencies
+1. **Clone the Repository**
 
-Navigate to the project directory and install the necessary dependencies:
+   ```bash
+   git clone https://github.com/manthmn/todo_app.git
+   cd todo_app
 
-bash
-Copy code
-flutter pub get
-Testing
-This project includes unit and widget tests to ensure the application functions as expected. The tests cover:
+2. **Run the Application**
+  
+   ```bash
+   #Choose your preferred method to run the application
+   #Using Flutter CLI
+   #Install the necessary dependencies
+   flutter pub get
+   flutter run
 
-BLoC state transitions.
-Widget interactions.
-To run the tests:
+3. **Using the Application**
 
-bash
-Copy code
-flutter test
-Project Structure
-lib/
+- **Add To-Do**: Press the '+' button to add a new to-do item.
+- **Mark as Done**: Tap the checkbox next to a to-do item to mark it as completed.
+- **Delete To-Do**: Swipe right on a to-do item to delete it.
+- **Filter To-Dos**: Use the toggle buttons to filter between All, Pending, and Completed tasks.
+- **Search To-Dos**: Use the search bar to filter tasks by name.
 
-bloc/: Contains the BLoC files (todo_bloc.dart, todo_event.dart, todo_state.dart) managing the business logic and state of the application.
-model/: Contains the Todo model class, which defines the structure of a to-do item.
-repository/: Contains the TodoRepository class, which handles CRUD operations on the to-do items using SQLite.
-widget/: Contains the UI components, including home_page.dart.
-test/
+4. **Testing**
 
-Unit and widget tests for the BLoC, repository, and widgets.
-Key Components
-Database: The application uses sqflite for local storage, handled by DatabaseProvider.
-State Management: BLoC pattern is used to manage the application state, ensuring a clear separation between business logic and UI.
-Testing: Unit tests using flutter_test and bloc_test, with mock dependencies provided by mocktail.
-Troubleshooting
-Common Issues:
+    This project includes unit and widget tests to ensure the application functions as expected. The tests cover:
 
-Ensure all dependencies are correctly installed by running flutter pub get.
-If running on a physical device, ensure the device is connected and recognized by running flutter devices.
-Support:
+    - BLoC state transitions(Unit Test cases).
+    - Widget interactions.
 
-For any issues, please open an issue on GitHub or contact the developer directly.
-Contributing
-Contributions are welcome! Please fork the repository and submit a pull request.
+    To run the tests:
+     ```bash
+     flutter test
 
-License
-This project is licensed under the MIT License - see the LICENSE file for details.
+5. **Project Structure**
 
-Acknowledgments
-Flutter team for providing an amazing framework.
-The open-source community for their contributions and support.
-Feel free to customize the content as needed.
+  ```plaintext
+  lib/
+  │
+  ├── bloc/
+  │   └── todo_bloc.dart
+  │   └── todo_event.dart
+  │   └── todo_state.dart
+  │
+  ├── model/
+  │   └── todo.dart
+  │
+  ├── repository/
+  │   └── todo_repository.dart
+  │
+  └── widget/
+      └── home_page.dart
+```
+
+**bloc/:** Contains the BLoC files (todo_bloc.dart, todo_event.dart, todo_state.dart) that manage the business logic and state of the application.
+
+**model/:** Contains the Todo model class, which defines the structure of a to-do item.
+
+**repository/:** Contains the TodoRepository class, which handles CRUD operations on to-do items using SQLite.
+
+**widget/:** Contains the UI components, including home_page.dart.
+
+  ```plaintext
+  test/
+  │
+  └── home_page_test.dart
+  └── todo_bloc_test.dart
+```
+
+**test/:** Unit and widget tests for the BLoC, widgets.
