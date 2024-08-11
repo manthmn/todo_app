@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:todo_app/bloc/todo_bloc.dart';
@@ -32,15 +33,15 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    // SystemChrome.setSystemUIOverlayStyle(
-    //   SystemUiOverlayStyle.dark.copyWith(
-    //     statusBarColor: ColorConstants.primary,
-    //     statusBarBrightness: Brightness.dark,
-    //     statusBarIconBrightness: Brightness.light,
-    //     systemNavigationBarColor: ColorConstants.primary,
-    //     systemNavigationBarIconBrightness: Brightness.dark,
-    //   ),
-    // );
+    SystemChrome.setSystemUIOverlayStyle(
+      SystemUiOverlayStyle.dark.copyWith(
+        statusBarColor: ColorConstants.primary,
+        statusBarBrightness: Brightness.dark,
+        statusBarIconBrightness: Brightness.light,
+        systemNavigationBarColor: ColorConstants.primary,
+        systemNavigationBarIconBrightness: Brightness.dark,
+      ),
+    );
     return SafeArea(
       child: GestureDetector(
         onTap: () {
