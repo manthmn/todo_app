@@ -1,43 +1,26 @@
 class Todo {
-  int? id;
-  String? description;
-  bool isDone = false;
+  int? id; // Unique identifier for the todo item
+  String? description; // Description of the todo item
+  bool isDone = false; // Status of the todo item, default is false
 
   Todo({this.id, this.description, this.isDone = false});
 
-  // Add the copyWith method
-  Todo copyWith({
-    int? id,
-    String? description,
-    bool? isDone,
-  }) {
-    return Todo(
-      id: id ?? this.id,
-      description: description ?? this.description,
-      isDone: isDone ?? this.isDone,
-    );
-  }
-
+  // Factory constructor to create a Todo object from JSON
   factory Todo.fromDatabaseJson(Map<String, dynamic> data) => Todo(
-        //Factory method will be used to convert JSON objects that
-        //are coming from querying the database and converting
-        //it into a Todo object
-
         id: data['id'],
         description: data['description'],
 
-        //Since sqlite doesn't have boolean type for true/false,
-        //we will use 0 to denote that it is false
-        //and 1 for true
+        // Convert the is_done field from JSON to a boolean
+        // SQLite uses 0 for false and 1 for true
         isDone: data['is_done'] == 0 ? false : true,
       );
 
+  // Method to convert a Todo object to a JSON-like Map
   Map<String, dynamic> toDatabaseJson() => {
-        //A method will be used to convert Todo objects that
-        //are to be stored into the datbase in a form of JSON
-
         "id": id,
         "description": description,
+
+        // Convert the isDone status to an integer for storing in SQLite
         "is_done": isDone == false ? 0 : 1,
       };
 }

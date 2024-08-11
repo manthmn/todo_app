@@ -16,6 +16,7 @@ class MyApp extends StatelessWidget {
       title: 'ToDo App',
       theme: ThemeData(primarySwatch: Colors.grey, canvasColor: Colors.transparent),
       home: RepositoryProvider(
+        // Provides an instance of TodoRepository to the widget tree
         create: (context) => TodoRepository(),
         child: MultiBlocProvider(
           providers: [

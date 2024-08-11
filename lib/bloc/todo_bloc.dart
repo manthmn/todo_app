@@ -6,11 +6,13 @@ import 'package:todo_app/repository/todo_repository.dart';
 part 'todo_event.dart';
 part 'todo_state.dart';
 
+/// Bloc to manage Todo events and states.
+/// It handles loading, adding, updating, and deleting todos.
 class TodoBloc extends Bloc<TodoEvent, TodoState> {
   final TodoRepository _todoRepository;
 
   TodoBloc(this._todoRepository) : super(TodoLoading()) {
-    //Load todos with query and empty
+    /// Emits a loading state, then attempts to fetch todos from the repository.
     on<LoadTodo>((event, emit) async {
       emit(TodoLoading());
       try {
@@ -27,6 +29,7 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
       }
     });
 
+    /// Emits a loading state, then adds a new todo to the repository.
     on<AddTodo>((event, emit) async {
       emit(TodoLoading());
       try {
@@ -38,6 +41,7 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
       }
     });
 
+    /// Emits a loading state, then deletes the specified todo from the repository.
     on<DeleteTodo>((event, emit) async {
       emit(TodoLoading());
       try {
@@ -49,6 +53,7 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
       }
     });
 
+    /// Emits a loading state, then updates the specified todo in the repository.
     on<UpdateTodo>((event, emit) async {
       emit(TodoLoading());
       try {

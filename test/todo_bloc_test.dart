@@ -5,12 +5,14 @@ import 'package:todo_app/bloc/todo_bloc.dart';
 import 'package:todo_app/model/todo.dart';
 import 'package:todo_app/repository/todo_repository.dart';
 
+// Mock class for TodoRepository
 class MockTodoRepository extends Mock implements TodoRepository {}
 
 void main() {
   late TodoBloc todoBloc;
   late MockTodoRepository mockTodoRepository;
 
+  // Setup for each test
   setUp(() {
     mockTodoRepository = MockTodoRepository();
     todoBloc = TodoBloc(mockTodoRepository);
@@ -33,10 +35,12 @@ void main() {
       isDone: true,
     );
 
+    // Test to check the initial state of the TodoBloc
     test('initial state is TodoLoading', () {
       expect(todoBloc.state, TodoLoading());
     });
 
+    // Test for LoadTodo event
     blocTest<TodoBloc, TodoState>(
       'emits [TodoLoaded] when LoadTodo is added',
       build: () {
@@ -50,6 +54,7 @@ void main() {
       ],
     );
 
+    // Test for AddTodo event
     blocTest<TodoBloc, TodoState>(
       'emits [TodoLoaded] when AddTodo is added',
       build: () {
@@ -64,10 +69,12 @@ void main() {
       ],
     );
 
+    // Test for UpdateTodo event
     blocTest<TodoBloc, TodoState>(
       'emits [TodoLoaded] when UpdateTodo is added',
       build: () {
-        when(() => mockTodoRepository.updateTodo(updatedTodo)).thenAnswer((_) async => 0);
+        when(() => mockTodoRepository.updateTodo(updatedTodo))
+            .thenAnswer((_) async => 1); // Return 1 for a successful update
         when(() => mockTodoRepository.getTodos()).thenAnswer((_) async => [updatedTodo]);
         return todoBloc;
       },
@@ -78,10 +85,12 @@ void main() {
       ],
     );
 
+    // Test for DeleteTodo event
     blocTest<TodoBloc, TodoState>(
       'emits [TodoLoaded] when DeleteTodo is added',
       build: () {
-        when(() => mockTodoRepository.deleteTodo(todo.id!)).thenAnswer((_) async => todo.id!);
+        when(() => mockTodoRepository.deleteTodo(todo.id!))
+            .thenAnswer((_) async => 1); // Return 1 for successful deletion
         when(() => mockTodoRepository.getTodos()).thenAnswer((_) async => []);
         return todoBloc;
       },
@@ -92,6 +101,7 @@ void main() {
       ],
     );
 
+    // Test for error handling in repository
     blocTest<TodoBloc, TodoState>(
       'emits [TodoError] when repository throws an exception',
       build: () {
@@ -101,7 +111,7 @@ void main() {
       skip: 1,
       act: (bloc) => bloc.add(const LoadTodo()),
       expect: () => [
-        const TodoError('Error loading todos'),
+        TodoError(Exception('Error loading todos').toString()),
       ],
     );
   });

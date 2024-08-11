@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:todo_app/bloc/todo_bloc.dart';
@@ -21,42 +20,46 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+    // Initialize the TodoBloc from the context
     _todoBloc = BlocProvider.of<TodoBloc>(context);
   }
 
   @override
   void dispose() {
     super.dispose();
+    _searchCtlr.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setSystemUIOverlayStyle(
-      SystemUiOverlayStyle.dark.copyWith(
-          statusBarColor: Colors.transparent,
-          systemNavigationBarColor: ColorConstants.primary,
-          systemNavigationBarIconBrightness: Brightness.dark,
-          statusBarBrightness: Brightness.dark),
-    );
-    return GestureDetector(
-      onTap: () {
-        FocusScope.of(context).unfocus();
-      },
-      child: Scaffold(
+    // SystemChrome.setSystemUIOverlayStyle(
+    //   SystemUiOverlayStyle.dark.copyWith(
+    //     statusBarColor: ColorConstants.primary,
+    //     statusBarBrightness: Brightness.dark,
+    //     statusBarIconBrightness: Brightness.light,
+    //     systemNavigationBarColor: ColorConstants.primary,
+    //     systemNavigationBarIconBrightness: Brightness.dark,
+    //   ),
+    // );
+    return SafeArea(
+      child: GestureDetector(
+        onTap: () {
+          // Unfocus any text fields when tapping outside
+          FocusScope.of(context).unfocus();
+        },
+        child: Scaffold(
           appBar: _appBar(),
           extendBodyBehindAppBar: false,
-          resizeToAvoidBottomInset: false,
+          resizeToAvoidBottomInset: true,
           backgroundColor: ColorConstants.primary,
-          body: SafeArea(
-            child: Container(
-              padding: const EdgeInsets.fromLTRB(4, 8, 4, 8),
-              child: Column(
-                children: [
-                  _getToggleButton(),
-                  const SizedBox(height: 8),
-                  Expanded(child: Container(child: _buildTodoPage())),
-                ],
-              ),
+          body: Container(
+            padding: const EdgeInsets.all(4),
+            child: Column(
+              children: [
+                _getToggleButton(),
+                const SizedBox(height: 8),
+                Expanded(child: Container(child: _buildTodoPage())),
+              ],
             ),
           ),
           floatingActionButton: Padding(
@@ -65,12 +68,15 @@ class _HomePageState extends State<HomePage> {
               elevation: 5.0,
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
               onPressed: () {
-                _showAddTodoSheet(context, null);
+                // Show the dialog to add a new Todo
+                _showAddTodoBox(context, null);
               },
               backgroundColor: ColorConstants.primaryLight,
               child: const Icon(Icons.add, size: 32, color: ColorConstants.textColor),
             ),
-          )),
+          ),
+        ),
+      ),
     );
   }
 
@@ -80,7 +86,7 @@ class _HomePageState extends State<HomePage> {
       child: AppBar(
         backgroundColor: ColorConstants.primary,
         flexibleSpace: Padding(
-          padding: const EdgeInsets.fromLTRB(12, 44, 12, 12),
+          padding: const EdgeInsets.all(12),
           child: Row(
             children: [
               const Text(
@@ -95,6 +101,7 @@ class _HomePageState extends State<HomePage> {
                     hintText: 'Search...',
                     hintStyle: const TextStyle(color: ColorConstants.textColor),
                     suffixIcon: IconButton(
+                      splashRadius: 24,
                       icon: Icon(_searchCtlr.text == '' ? Icons.search : Icons.close, color: ColorConstants.textColor),
                       onPressed: () {
                         if (_searchCtlr.text != '') {
@@ -159,22 +166,19 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _buildTodoPage() {
-    return BlocListener<TodoBloc, TodoState>(
-      listener: (context, state) {},
-      child: BlocBuilder<TodoBloc, TodoState>(builder: (context, state) {
-        if (state is TodoLoaded) {
-          return state.todos.isEmpty && _selectedIndex != 2
-              ? _todoMessageWidget(Icons.format_list_bulleted_add, 'Start adding Todo...')
-              : _getTodoList(state.todos);
-        } else if (state is TodoLoading) {
-          return const Center(child: CircularProgressIndicator());
-        } else if (state is TodoError) {
-          return _todoMessageWidget(Icons.error_outline, 'Something went wrong!');
-        } else {
-          return _todoMessageWidget(Icons.format_list_bulleted_add, 'Start adding Todo...');
-        }
-      }),
-    );
+    return BlocBuilder<TodoBloc, TodoState>(builder: (context, state) {
+      if (state is TodoLoaded) {
+        return state.todos.isEmpty && _selectedIndex != 2
+            ? _todoMessageWidget(Icons.format_list_bulleted_add, 'Start adding Todo...')
+            : _getTodoList(state.todos);
+      } else if (state is TodoLoading) {
+        return const Center(child: CircularProgressIndicator());
+      } else if (state is TodoError) {
+        return _todoMessageWidget(Icons.error_outline, 'Something went wrong!');
+      } else {
+        return _todoMessageWidget(Icons.format_list_bulleted_add, 'Start adding Todo...');
+      }
+    });
   }
 
   Widget _getTodoList(List<dynamic> data) {
@@ -194,7 +198,7 @@ class _HomePageState extends State<HomePage> {
                   _todoBloc.add(DeleteTodo(todo: todo));
                 },
                 child: Container(
-                  width: 80,
+                  width: 76,
                   margin: const EdgeInsets.symmetric(vertical: 4),
                   decoration: const BoxDecoration(
                     color: ColorConstants.textColor,
@@ -219,7 +223,7 @@ class _HomePageState extends State<HomePage> {
             color: ColorConstants.primary,
             child: InkWell(
               onTap: () {
-                _showAddTodoSheet(context, todo);
+                _showAddTodoBox(context, todo);
               },
               child: Stack(
                 children: [
@@ -243,7 +247,7 @@ class _HomePageState extends State<HomePage> {
                     top: 0,
                     child: InkWell(
                       onTap: () {
-                        //Reverse the value
+                        // Toggle the completion status of the todo
                         todo.isDone = !todo.isDone;
                         _todoBloc.add(UpdateTodo(todo: todo));
                       },
@@ -267,18 +271,18 @@ class _HomePageState extends State<HomePage> {
   Widget _todoMessageWidget(IconData iconData, String message) {
     return Column(
       children: [
-        const SizedBox(height: 220),
-        Icon(iconData, size: 76, color: ColorConstants.textColor),
+        const SizedBox(height: 200),
+        Icon(iconData, size: 70, color: ColorConstants.textColor),
         const SizedBox(height: 20),
         Text(
           message,
-          style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w500, color: ColorConstants.textColor),
+          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w500, color: ColorConstants.textColor),
         ),
       ],
     );
   }
 
-  void _showAddTodoSheet(BuildContext context, Todo? todo) {
+  void _showAddTodoBox(BuildContext context, Todo? todo) {
     final todoController = TextEditingController(text: todo?.description);
     showDialog(
       context: context,

@@ -7,8 +7,10 @@ import 'package:todo_app/model/todo.dart';
 import 'package:todo_app/repository/todo_repository.dart';
 import 'package:todo_app/widget/home_page.dart';
 
+// Global list to mock Todo data
 List<Todo> globalTodos = [];
 
+// Mock repository to simulate TodoRepository behavior
 class MockTodoRepository extends Mock implements TodoRepository {
   @override
   Future<List<Todo>> getTodos({List<String>? columns, String? query, int? index}) async {
@@ -53,21 +55,23 @@ void main() {
   late TodoBloc todoBloc;
   late MockTodoRepository mockTodoRepository;
 
+  // Set up the mock repository and bloc before each test
   setUp(() {
-    globalTodos = [];
+    globalTodos = []; // Clear globalTodos before each test
     mockTodoRepository = MockTodoRepository();
     todoBloc = TodoBloc(mockTodoRepository);
   });
 
+  // Close the bloc after each test
   tearDown(() {
     todoBloc.close();
   });
 
+  // Create a MaterialApp with the HomePage widget and mock repository
   Widget createHomePage() {
-    globalTodos = [];
     return MaterialApp(
       home: RepositoryProvider(
-        create: (context) => MockTodoRepository(),
+        create: (context) => mockTodoRepository,
         child: MultiBlocProvider(
           providers: [
             BlocProvider(
@@ -208,22 +212,21 @@ void main() {
       // Verify if the new Todo item appears in the list
       expect(find.text('Delete Todo'), findsOneWidget);
 
-      // Perform a drag from left to right
+      // Perform a drag from left to right to reveal delete option
       await tester.drag(find.text('Delete Todo'), const Offset(300, 100));
-
       await tester.pump();
 
+      // Verify if the delete button appears
       final finder = find.byIcon(Icons.delete);
-
-      // Verify if the delete button appears in the list
       expect(finder, findsOneWidget);
 
+      // Tap the delete button to remove the Todo
       await tester.tap(finder);
 
       // Rebuild the widget after the drag
       await tester.pump();
 
-      // Verify if the new Todo item deleted from the list
+      // Verify if the Todo item has been removed from the list
       expect(find.text('Delete Todo'), findsNothing);
     });
   });

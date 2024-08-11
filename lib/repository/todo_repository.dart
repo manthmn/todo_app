@@ -2,33 +2,32 @@ import 'package:todo_app/database/database.dart';
 import 'package:todo_app/model/todo.dart';
 
 class TodoRepository {
-  final dbProvider = DatabaseProvider.dbProvider;
+  final dbProvider = DatabaseProvider.dbProvider; // instance of DatabaseProvider
 
-  //Adds new Todo records
+  // Adds a new Todo record to the database
   Future<int> createTodo(Todo todo) async {
     final db = await dbProvider.database;
-    var result = db.insert(todoTABLE, todo.toDatabaseJson());
+    var result = await db.insert(todoTABLE, todo.toDatabaseJson());
     return result;
   }
 
-  //Get All Todo items
-  //Searches if query string was passed
+  // Get All Todo items
+  // Filters by query string and index
   Future<List<Todo>> getTodos({List<String>? columns, String? query, int? index}) async {
     try {
       final db = await dbProvider.database;
       List<Map<String, dynamic>>? result;
 
-      // Initialize the where clause and where arguments list
       String whereClause = '';
       List<dynamic> whereArgs = [];
 
-      // Add the query condition if it's not null and not empty
+      // Add a query condition if a query string is provided
       if (query != null && query.isNotEmpty) {
         whereClause = 'description LIKE ?';
         whereArgs.add("%$query%");
       }
 
-      // Add the isDone condition if it's not null
+      // Add a condition for the isDone field if an index is provided
       if (index != null) {
         if (whereClause.isNotEmpty) {
           whereClause += ' AND ';
@@ -37,42 +36,30 @@ class TodoRepository {
         whereArgs.add(index);
       }
 
-      // Perform the query based on the conditions
       if (whereClause.isNotEmpty) {
         result = await db.query(todoTABLE, columns: columns, where: whereClause, whereArgs: whereArgs);
       } else {
         result = await db.query(todoTABLE, columns: columns);
       }
 
-      List<Todo> todo = result.isNotEmpty ? result.map((item) => Todo.fromDatabaseJson(item)).toList() : [];
-      return todo;
+      List<Todo> todos = result.isNotEmpty ? result.map((item) => Todo.fromDatabaseJson(item)).toList() : [];
+      return todos;
     } catch (e) {
       return [];
     }
   }
 
-  //Update Todo record
+  // Update Todo record
   Future<int> updateTodo(Todo todo) async {
     final db = await dbProvider.database;
     var result = await db.update(todoTABLE, todo.toDatabaseJson(), where: "id = ?", whereArgs: [todo.id]);
     return result;
   }
 
-  //Delete Todo records
+  // Delete Todo records
   Future<int> deleteTodo(int id) async {
     final db = await dbProvider.database;
     var result = await db.delete(todoTABLE, where: 'id = ?', whereArgs: [id]);
-
-    return result;
-  }
-
-  //We are not going to use this in the demo
-  Future deleteAllTodo() async {
-    final db = await dbProvider.database;
-    var result = await db.delete(
-      todoTABLE,
-    );
-
     return result;
   }
 }
